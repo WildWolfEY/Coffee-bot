@@ -1,0 +1,203 @@
+body{
+    background-image:url('coffee-img/fon.jpg');
+    padding-top:100px;
+}
+
+.layer-cup {
+    z-index: 1;
+    position: absolute;
+    width:400px;
+    margin-top:30px;
+}
+
+.base{
+    width:500;
+    height:600;
+    border:solid 5px black;
+    border-radius:15px;
+    box-shadow: 0 0 50px rgba(0,0,0,0.9);
+    background:linear-gradient(90deg,gray, white, gray, white);
+
+}
+.tab-all{
+    margin-left: 30%;
+    display:inline-block;
+}
+.tab{
+    margin-left:50px;
+}
+.display{
+    margin-left: 135px;
+    background:radial-gradient(circle farthest-corner at 200px 100px, #E4E4D8, white);
+    border:solid black 1px;
+    width:200px;
+    height:100px;
+    font-size:30px;
+    font-family: courier;
+    padding:10px;
+    color: gray;
+
+}
+.top-panel{
+    background:linear-gradient(to top, black 20%, #E4E4D8 50%, black 80%);
+
+    margin:5px;
+    height:300px;
+    width:98%;
+}
+.button-settings{
+    display:inline-block;
+    width:60px;
+    height:60px;
+    border-radius:30px;
+    background:linear-gradient(45deg,gray, white, gray);
+    margin-right:50px;
+    margin-top:30px;
+    margin-bottom:30px;
+    cursor:pointer;
+}
+.button-settings:first-child{
+    margin-left:30px;
+}
+.select-btn{
+    background:linear-gradient(45deg,orange, yellow, orange);
+}
+
+.ico {
+    position: absolute;
+    margin-left:30px;
+    margin-top:30px;
+    object-fit: cover;
+    max-width: none;
+    max-height: none;
+    width: 32px;
+    height: 32px;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.drive-group{
+    display:inline-block;
+    width:60px;
+    height:60px;
+    border-radius:30px;
+    margin-left:400px;
+    margin-top:-30px;
+    cursor:pointer;
+}
+.drive-group:first-child{
+    margin-left:20px;
+}
+.button-start{
+    margin-top:-60px;
+    background:linear-gradient(45deg,gray, white, gray);
+}
+.started{
+    background:linear-gradient(45deg,lime, white, lime);
+}
+
+.started .start-ico {
+    border-top: 10px solid transparent;
+    border-left: 20px solid lime;
+    border-bottom: 10px solid transparent;
+}
+.button-stop{
+    background:linear-gradient(45deg,gray, white, gray);
+}
+.stopped{
+    background:linear-gradient(45deg,red, white, red);
+}
+.stopped .stop-ico {
+    background-color:red;
+}
+.start-ico{
+    position: relative;
+    top:20px;
+    left:20px;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-left: 20px solid gray;
+    border-bottom: 10px solid transparent;
+}
+.stop-ico{
+    position: relative;
+    background-color:gray;
+    top:20px;
+    left:20px;
+    width: 20;
+    height: 20;
+}
+.cooler{
+    width:160px;
+    height:200px;
+    margin-left:170px;
+    margin-top:-40px;
+    background:linear-gradient(0deg,gray, white, gray);
+    border: solid 2px black;
+}
+.pip{
+    display:inline-block;
+    width:30px;
+    height:20px;
+    border: solid 1px black;
+    background:linear-gradient(90deg,gray, white, gray);
+    margin-left:40px;
+}
+.pip:first-child{
+    margin-left:200px;
+}
+.line{
+    position:absolute;
+    margin-top:-4px;
+    display:inline-block;
+    width:15px;
+    height:0px;
+    background:linear-gradient(90deg,chocolate,#E4E4D8, brown);
+    border-radius: 5px;
+    margin-left:208px;
+}
+.line:first-child{
+    margin-left:285px;
+}
+.load .line:nth-last-child(1) {animation: loadingA 4.5s 0.1s infinite;}
+.load .line:nth-last-child(2) {animation: loadingB 4.0s 0.1s infinite;}
+
+@keyframes loadingA {
+0 { height: 0px; width:15px;}
+50% { height: 20px; width:9px;}
+100% { height:40px; width:15px;}
+}
+
+@keyframes loadingB {
+0 { height: 0px; width:15px;}
+50% { height: 20px; width:7px;}
+100% { height:40px; width:14px;}
+}
+
+.cup { fill: url(#Gradient1); }
+.stop1 { stop-color: rgb(199,230,255); }
+.stop2 { stop-color: white; stop-opacity: 1; }
+.stop3 { stop-color: rgb(199,230,255); }
+
+.stick{
+    display:none;
+    position:absolute;
+    width:250px;
+    height:250px;
+}
+.stick-text{
+    margin-left:30px;
+    margin-top:60px;
+    width:200px;
+    margin-right:-50px;
+    font-size:20px;
+    font-family:Comic Sans MS;
+    font-style:italic;
+    color:blue;
+}
+.cancel-text{
+    text-decoration:line-through;
+}
