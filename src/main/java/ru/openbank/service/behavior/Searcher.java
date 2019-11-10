@@ -3,7 +3,7 @@ package ru.openbank.service.behavior;
 import ru.openbank.model.Person;
 
 /**
- * Created by Ελενΰ on 04.11.2019.
+ * Created by Π•Π»ΠµΠ½Π° on 04.11.2019.
  */
 public interface Searcher {
     Person searchPair(Person customer);

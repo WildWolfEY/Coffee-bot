@@ -7,37 +7,55 @@ import ru.openbank.model.Option;
 import ru.openbank.model.Person;
 import ru.openbank.model.Status;
 import ru.openbank.service.behavior.Activator;
-import ru.openbank.service.behavior.Sender;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Created by Елена on 06.11.2019.
+ * Created by Р•Р»РµРЅР° on 06.11.2019.
  */
 @Service
-public class SimpleActivator implements Activator{
+public class SimpleActivator implements Activator {
     @Autowired
     private PairSearcher searcher;
     @Autowired
-    private DataSaver saver;
+    private SimpleDataSaver saver;
     @Autowired
-    private Sender sender;
+    private MailSender sender;
 
-    public void activateSearcher(Person customer) {
+    public Person activateSearcher(Person customer) {
+        customer = saver.get(customer.getMail());
         Person partner = searcher.searchPair(customer);
-        if (partner!=null) {
+
+        if (partner != null) {
             partner.setStatus(Status.BISY);
             customer.setStatus(Status.BISY);
+            partner.setPartner(customer);
+            customer.setPartner(partner);
+            partner.setStartDate(new Date());
+            customer.setStartDate(new Date());
             saver.update(partner);
+            saver.update(customer);
+            notifyPair(customer, partner);
+            return partner;
         }
-        else
-        {
-            customer.setStatus(Status.FREE);
-        }
-        saver.update(customer);
+        return null;
+    }
 
-        notifyPair(customer, partner);
+    public void cancelMeeting(Person customer) {
+        customer = saver.get(customer.getMail());
+        Person partner = customer.getPartner();
+        if (partner != null) {
+            partner.setStatus(Status.FREE);
+            partner.setStartDate(null);
+            partner.setPartner(null);
+            saver.update(partner);
+            notifyPartner(customer, partner);
+        }
+        customer.setStatus(Status.FREE);
+        customer.setPartner(null);
+        customer.setStartDate(null);
+        saver.update(customer);
     }
 
     public void updatePerson(Person person) {
@@ -49,98 +67,74 @@ public class SimpleActivator implements Activator{
         sender.send(partner.getMail(), createMessageInvitationBody(partner, customer));
     }
 
-    public List<Person> all()
-    {
-        return saver.getAll().values().stream().collect(Collectors.toList());
+    public void notifyPartner(Person customer, Person partner) {
+        sender.send(partner.getMail(), createMessageCancelBody(partner, customer));
     }
 
-    private String createMessageInvitationBody(Person customer, Person partner)
-    {
-        String dear = customer.getSex().equals("F")?"Дорогая ":"Дорогой ";
-        //String invitation = partner.getSex().equals("F")?" пригласила ":" пригласил "
-        String about = partner.getOptions().contains(Option.ABOUTWORK)?" пообщаться на деловые темы " : " пообщаться ";
+    private String createMessageInvitationBody(Person customer, Person partner) {
+        String dear = customer.getSex().equals("F") ? "Р”РѕСЂРѕРіР°СЏ " : "Р”РѕСЂРѕРіРѕР№ ";
+        String about = partner.getOptions().contains(Option.ABOUTWORK) ? " РїРѕРѕР±С‰Р°С‚СЊСЃСЏ РЅР° РґРµР»РѕРІС‹Рµ С‚РµРјС‹ " : " РїРѕРѕР±С‰Р°С‚СЊСЃСЏ ";
         String deal = "";
-        if ( partner.getOptions().contains(Option.LISTENING) && partner.getOptions().contains(Option.TALKIG))
-            deal = "Ваш собеседник любит послушать и поговорить.";
+        if (partner.getOptions().contains(Option.LISTENING) && partner.getOptions().contains(Option.TALKIG))
+            deal = "Р’Р°С€ СЃРѕР±РµСЃРµРґРЅРёРє Р»СЋР±РёС‚ РїРѕСЃР»СѓС€Р°С‚СЊ Рё РїРѕРіРѕРІРѕСЂРёС‚СЊ.";
         else if (partner.getOptions().contains(Option.LISTENING))
-            deal = "Ваш собеседник больше предпочитает быть слушателем.";
-        else if(partner.getOptions().contains(Option.TALKIG))
-            deal = "Ваш собеседник очень любит поговорить.";
+            deal = "Р’Р°С€ СЃРѕР±РµСЃРµРґРЅРёРє Р±РѕР»СЊС€Рµ РїСЂРµРґРїРѕС‡РёС‚Р°РµС‚ Р±С‹С‚СЊ СЃР»СѓС€Р°С‚РµР»РµРј.";
+        else if (partner.getOptions().contains(Option.TALKIG))
+            deal = "Р’Р°С€ СЃРѕР±РµСЃРµРґРЅРёРє РѕС‡РµРЅСЊ Р»СЋР±РёС‚ РїРѕРіРѕРІРѕСЂРёС‚СЊ.";
 
-        String msg = "Добрый день!\n"+dear+customer.getName()+
-                ", вас приглашает на встречу "+partner.getName()+about+" за чашечкой ароматного кофе.\n"+
-                deal+"\n"+
-                "Предлагаем вам встретиться в 13:00, или договоритесь с вашим собеседником на другое, удобное для вас время.\n\n"+
-                "Контакты для связи: \n"+
-                "Mail: "+partner.getMail()+"\n";
-        if (partner.getPhone()!=null)
-            msg=msg+"Тел. "+partner.getPhone();
+        String msg = "Р”РѕР±СЂС‹Р№ РґРµРЅСЊ!\n" + dear + customer.getName() +
+                ", РІР°СЃ РїСЂРёРіР»Р°С€Р°РµС‚ РЅР° РІСЃС‚СЂРµС‡Сѓ " + partner.getName() + about + "Р·Р° С‡Р°С€РµС‡РєРѕР№ Р°СЂРѕРјР°С‚РЅРѕРіРѕ РєРѕС„Рµ.\n" +
+                deal + "\n" +
+                "РџСЂРµРґР»Р°РіР°РµРј РІР°Рј РґРѕРіРѕРІРѕСЂРёС‚СЊСЃСЏ Рѕ РІСЃС‚СЂРµС‡Рµ СЃ РІР°С€РёРј СЃРѕР±РµСЃРµРґРЅРёРєРѕРј РЅР° СѓРґРѕР±РЅРѕРµ РґР»СЏ РІР°СЃ РІСЂРµРјСЏ.\n\n" +
+                "РљРѕРЅС‚Р°РєС‚С‹ РґР»СЏ СЃРІСЏР·Рё: \n" +
+                "Mail: " + partner.getMail() + "\n";
 
-        msg=msg+"\n\n"+"Кофебот желает вам приятного кофепития ;)";
+
+        msg = msg + "\n\n" + "РљРѕС„РµР±РѕС‚ Р¶РµР»Р°РµС‚ РІР°Рј РїСЂРёСЏС‚РЅРѕРіРѕ РєРѕС„РµРїРёС‚РёСЏ ;)";
 
         return msg;
     }
 
-    private String createMessageCancelBody(Person customer, Person partner)
-    {
-        String dear = customer.getSex().equals("F")?"Дорогая ":"Дорогой ";
-        //String invitation = partner.getSex().equals("F")?" пригласила ":" пригласил "
-        String about = partner.getOptions().contains(Option.ABOUTWORK)?" пообщаться на деловые темы " : " пообщаться ";
-        String msg = dear+customer.getName()+
-                ", к сожалению, "+partner.getName()+about+" отменил вашу встречу.\n"+
-                "Не переживайте, в ближайшее время мы найдём вам нового собеседника!\n";
-
-        msg=msg+"\n\n"+"С уважением, ваш Кофебот";
+    private String createMessageCancelBody(Person customer, Person partner) {
+        String dear = customer.getSex().equals("F") ? "Р”РѕСЂРѕРіР°СЏ " : "Р”РѕСЂРѕРіРѕР№ ";
+        String msg = dear + customer.getName() +
+                "\nРџРѕР»СЊР·РѕРІР°С‚РµР»СЊ " + partner.getName() + " РѕС‚РјРµРЅРёР» (Р·Р°РІРµСЂС€РёР») РІР°С€Сѓ РІСЃС‚СЂРµС‡Сѓ.\n";
+        msg = msg + "\n\n" + "РЎ СѓРІР°Р¶РµРЅРёРµРј, РІР°С€ РљРѕС„РµР±РѕС‚";
         return msg;
     }
-    @Scheduled(fixedDelay = 20000)
-    public void revision() {
-        for (Person expiredPerson : getExpiredPersons())
-        {
-            expiredPerson.setStatus(Status.FREE);
-            saver.update(expiredPerson);
-        }
-        Map<Person, Person> pairMap = getFreePersons();
-        for (Map.Entry<Person, Person> entry : pairMap.entrySet())
-        {
-            entry.getKey().setStatus(Status.BISY);
-            entry.getValue().setStatus(Status.BISY);
-            saver.update(entry.getKey());
-            saver.update(entry.getValue());
-            notifyPair(entry.getKey(), entry.getValue());
-        }
 
+    @Scheduled(fixedDelay = 7 * 24 * 60 * 60 * 1000)
+    public void resetBisyStatus() {
+        List<Person> bisy = getExpiredPersons();
+        for (Person bisyPerson : bisy) {
+            bisyPerson.setStartDate(null);
+            bisyPerson.setStatus(Status.BISY);
+        }
     }
 
-    public Map<Person,Person> getFreePersons()
-    {
-        List<Person> freePersons = saver.getAll().values().stream().filter(x->x.getStatus().equals(Status.FREE)).collect(Collectors.toList());
-        Map<Person, Person> pairMap = new HashMap<>();
-        Person person1=null;
-        Person person2=null;
-        for(Person person : freePersons)
-        {
-            person1=person1==null?person:person1;
-            person2=person2==null && person1!=null?person:person2;
-            if (person1!=null && person2!=null)
-            {
-                pairMap.put(person1, person2);
-                person1 = null;
-                person2 = null;
-            }
+    @Scheduled(fixedDelay = 5 * 60 * 1000)
+    public void formPairForWaiting() {
+        List<Person> waiting = getWaitingPersons();
+        for (Person waitingPerson : waiting) {
+            activateSearcher(waitingPerson);
         }
-        return pairMap;
     }
 
-    public List<Person> getExpiredPersons()
-    {
+    public List<Person> getExpiredPersons() {
         List<Person> expiredPersons = saver.getAll().values().stream()
                 .filter(x -> x.getStatus().equals(Status.BISY) && daysBetween(x.getStartDate(), new Date()) > 0)
                 .collect(Collectors.toList());
         return expiredPersons;
     }
 
-    private int daysBetween(Date d1, Date d2){
-        return (int)( (d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
+    public List<Person> getWaitingPersons() {
+        List<Person> waitingPersons = saver.getAll().values().stream()
+                .filter(x -> x.getStatus().equals(Status.WAITING))
+                .collect(Collectors.toList());
+        return waitingPersons;
+    }
+
+    private int daysBetween(Date d1, Date d2) {
+        return (int) ((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
     }
 }

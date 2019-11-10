@@ -1,12 +1,11 @@
 package ru.openbank.model;
 
 /**
- * Created by Ελενΰ on 04.11.2019.
+ * Created by Π•Π»ΠµΠ½Π° on 04.11.2019.
  */
 public enum Option {
     LISTENING,
     TALKIG,
     ABOUTWORK,
     ABOUTALL
-
 }

@@ -5,8 +5,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.sql.DataSource;
-
 @Configuration
 @EnableScheduling
 public class RootConfig implements WebMvcConfigurer {

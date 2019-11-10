@@ -1,20 +1,26 @@
 package ru.openbank.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import ru.openbank.service.SimpleRegistrator;
 
 /**
- * Created by Ελενΰ on 09.11.2019.
+ * Created by Π•Π»ΠµΠ½Π° on 09.11.2019.
  */
 @Controller
 public class ViewController {
-    @RequestMapping(value = "/entrance", method = RequestMethod.GET)
-    public String entrance(){
-        return "entrance";
-    }
-    @RequestMapping(value = "/room", method = RequestMethod.GET)
-    public String room(){
+    @Autowired
+    SimpleRegistrator registrator;
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String room() {
         return "coffee-room";
+    }
+
+    @RequestMapping(value = "/entrance", method = RequestMethod.GET)
+    public String entrance() {
+        return "entrance";
     }
 }

@@ -1,11 +1,7 @@
 package ru.openbank.service.behavior;
 
-import ru.openbank.model.Person;
-
-import java.io.File;
-
 /**
- * Created by Ελενΰ on 04.11.2019.
+ * Created by Π•Π»ΠµΠ½Π° on 04.11.2019.
  */
 public interface Sender {
     void send(String recipient, String text);

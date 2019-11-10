@@ -3,23 +3,25 @@ package ru.openbank.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.openbank.model.Person;
+import ru.openbank.model.Status;
 import ru.openbank.service.behavior.Registrator;
-import ru.openbank.service.behavior.Saver;
 
 /**
- * Created by Ελενΰ on 06.11.2019.
+ * Created by Π•Π»ΠµΠ½Π° on 06.11.2019.
  */
 @Service
 public class SimpleRegistrator implements Registrator {
     @Autowired
-    private Saver dataSaver;
+    private SimpleDataSaver dataSaver;
+
     public void createPerson(Person person) {
+        person.setStatus(Status.FREE);
         dataSaver.create(person);
     }
 
-    public boolean authenticate(String mail, Integer hashPwd) {
+    public boolean authenticate(String mail, String hashPwd) {
         Person person = dataSaver.get(mail);
-        if (person == null || person.getPassword()== null)
+        if (person == null || person.getPassword() == null)
             return false;
         if (hashPwd == null)
             return false;

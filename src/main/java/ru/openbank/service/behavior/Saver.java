@@ -5,7 +5,7 @@ import ru.openbank.model.Person;
 import java.util.Map;
 
 /**
- * Created by Ελενΰ on 06.11.2019.
+ * Created by Π•Π»ΠµΠ½Π° on 06.11.2019.
  */
 public interface Saver {
     void create(Person person);

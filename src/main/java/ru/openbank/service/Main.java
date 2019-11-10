@@ -6,7 +6,7 @@ import ru.openbank.model.Person;
 import ru.openbank.service.behavior.Activator;
 
 /**
- * Created by Елена on 04.11.2019.
+ * Created by Р•Р»РµРЅР° on 04.11.2019.
  */
 public class Main {
     @Autowired
@@ -20,9 +20,9 @@ public class Main {
         Person person5 = new Person();
 
 
-        person5.setName("Лена");
-        person5.setArea("Екатеринбург");
-        person5.setJob("Программист");
+        person5.setName("Р›РµРЅР°");
+        person5.setArea("Р•РєР°С‚РµСЂРёРЅР±СѓСЂРі");
+        person5.setJob("РџСЂРѕРіСЂР°РјРјРёСЃС‚");
         person5.setMail("lens@mail.ru");
         person5.setSex("F");
 

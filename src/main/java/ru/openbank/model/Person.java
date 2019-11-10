@@ -1,19 +1,21 @@
 package ru.openbank.model;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 /**
- * Created by Ελενΰ on 04.11.2019.
+ * Created by Π•Π»ΠµΠ½Π° on 04.11.2019.
  */
 
 @Getter
 @Setter
+@JsonAutoDetect
 public class Person {
     String name;
     String sex;
@@ -22,8 +24,23 @@ public class Person {
     String area;
     String mail;
     Status status;
-    Integer password;
-    String phone;
+    String password;
     Date startDate;
+    Person partner;
 
+    boolean admin;
+
+    private String token;
+
+    public Person() {
+        setToken();
+    }
+
+    public void setToken() {
+        token = UUID.randomUUID().toString();
+    }
+
+    public void deleteToken() {
+        token = "";
+    }
 }

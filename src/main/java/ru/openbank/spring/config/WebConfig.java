@@ -12,7 +12,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @ComponentScan("ru.openbank")
 public class WebConfig {
     @Bean
-    ViewResolver viewResolver(){
+    ViewResolver viewResolver() {
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
         resolver.setPrefix("/WEB-INF/viewes/");
         resolver.setSuffix(".jsp");
